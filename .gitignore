@@ -1,0 +1,67 @@
+# ─── Python ──────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+*.pkl
+!ml-training/models/scaler.pkl
+
+# Virtual environments
+venv/
+.venv/
+env/
+.env/
+
+# ─── Environment & Secrets ────────────────────────────────────────────────────
+backend/.env
+ml-training/.env
+*.env.local
+
+# ─── Node / Frontend ─────────────────────────────────────────────────────────
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/build/
+
+# ─── ML Model files (large binaries — keep only if small) ────────────────────
+# ml-training/models/*.pt  # Uncomment to exclude model weights
+
+# ─── IDE ─────────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ─── OS ──────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ─── Logs ────────────────────────────────────────────────────────────────────
+*.log
+logs/
+*.out
+
+# ─── MLflow ──────────────────────────────────────────────────────────────────
+mlruns/
+mlartifacts/
+
+# ─── Docker volumes ──────────────────────────────────────────────────────────
+infra/postgres-data/
+infra/minio-data/
+infra/redis-data/
+
+# ─── Jupyter ─────────────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb
+
+# ─── Misc ────────────────────────────────────────────────────────────────────
+*.zip
+*.tar.gz
+.gemini/
