@@ -4,6 +4,8 @@ StockSense ML — FastAPI Application Entry Point
 import os
 import asyncio
 import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("stocksense")
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
@@ -15,7 +17,6 @@ from app.db.session import engine
 from app.db.models import Base
 
 # ─── Create DB tables on startup (non-fatal if DB unavailable) ───────────────
-logger = logging.getLogger("stocksense")
 try:
     Base.metadata.create_all(bind=engine)
     logger.info("DB tables created / verified")

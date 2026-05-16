@@ -6,12 +6,12 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
     
     # Database
+    DATABASE_URL: Optional[str] = None
     POSTGRES_SERVER: str = "localhost"
     POSTGRES_USER: str = "user"
     POSTGRES_PASSWORD: str = "password"
     POSTGRES_DB: str = "stocksense"
     POSTGRES_PORT: str = "5432"
-    SQLALCHEMY_DATABASE_URI: Optional[str] = None
 
     # JWT
     SECRET_KEY: str = "SUPER_SECRET_KEY_CHANGE_ME"
@@ -34,6 +34,9 @@ class Settings(BaseSettings):
     )
 
     def get_db_url(self) -> str:
+        if self.DATABASE_URL:
+            # Handle potential 'postgres://' vs 'postgresql://' for SQLAlchemy
+            return self.DATABASE_URL.replace("postgres://", "postgresql://", 1)
         return f"postgresql+psycopg2://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
 
 settings = Settings()
