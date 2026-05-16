@@ -1,7 +1,7 @@
 #!/bin/bash
 # Backend startup script — works on Render, Railway, Cloud Run, Firebase App Hosting
 # PORT is injected by the hosting environment
-PORT="${PORT:-8080}"
+PORT="${PORT:-10000}"
 # ROOT_PATH: set to "/_/backend" only on Firebase App Hosting; leave empty on Render/Railway
 ROOT_PATH="${ROOT_PATH:-}"
 
