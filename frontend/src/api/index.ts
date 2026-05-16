@@ -12,7 +12,7 @@ export const API_BASE = `${_httpBase}/api/v1`;
 
 // WebSocket base — auto-converts http→ws, https→wss
 export const WS_BASE = _httpBase
-  .replace(/^https?:\/\//, (m) => (m === 'https://' ? 'wss://' : 'ws://'))
+  .replace(/^https?:\/\//, (m: string) => (m === 'https://' ? 'wss://' : 'ws://'))
   .replace(/\/$/, '');
 
 const client = axios.create({ baseURL: API_BASE, timeout: 30_000 });

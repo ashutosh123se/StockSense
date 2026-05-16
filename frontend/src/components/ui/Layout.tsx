@@ -1,4 +1,5 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import type { ReactNode } from 'react';
 import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard, LineChart, History, PieChart,

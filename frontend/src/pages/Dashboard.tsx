@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Activity, Crosshair, Target, RefreshCw, Wifi, WifiOff, TrendingUp, TrendingDown } from 'lucide-react';
+import { Activity, Crosshair, Target, RefreshCw, Wifi, WifiOff } from 'lucide-react';
 import { StockChart } from '../components/charts/StockChart';
 import { signalsApi, marketApi } from '../api';
 import type { SignalResult } from '../api';
