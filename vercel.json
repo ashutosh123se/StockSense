@@ -1,0 +1,12 @@
+{
+  "experimentalServices": {
+    "frontend": {
+      "entrypoint": "frontend",
+      "routePrefix": "/",
+      "framework": "vite"
+    }
+  },
+  "env": {
+    "VITE_API_BASE_URL": "https://stocksense-ml-backend.onrender.com"
+  }
+}
