@@ -26,19 +26,24 @@ except Exception as e:
 from app.api.v1 import auth, signals, portfolio
 from app.services.prediction import prediction_service
 
+# ─── Production route prefix (Firebase App Hosting / IDX) ───────────────────
+# When deployed, the backend is proxied at /_/backend.
+# ROOT_PATH tells FastAPI its mount point so OpenAPI docs & redirects work.
+ROOT_PATH = os.environ.get("ROOT_PATH", "")
 
 # ─── App ─────────────────────────────────────────────────────────────────────
 app = FastAPI(
     title=settings.PROJECT_NAME,
     version="1.0.0",
     description="StockSense ML — Production-grade stock prediction platform for NSE/BSE",
+    root_path=ROOT_PATH,          # e.g. "/_/backend" in production
     docs_url="/docs",
     redoc_url="/redoc",
 )
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],        # tighten in production with specific domains
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

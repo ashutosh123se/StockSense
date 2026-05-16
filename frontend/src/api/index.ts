@@ -1,11 +1,19 @@
 /**
  * Centralised API client
- * All requests go through this axios instance.
- * Add Authorization header here when auth is integrated.
+ * ─────────────────────
+ * In development:   VITE_API_BASE_URL is unset → uses http://localhost:8000
+ * In production:    VITE_API_BASE_URL=/_/backend  (set via .env.production)
+ * WebSocket:        derived from the same base (ws:// or wss://)
  */
 import axios from 'axios';
 
-export const API_BASE = 'http://localhost:8000/api/v1';
+const _httpBase = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000';
+export const API_BASE = `${_httpBase}/api/v1`;
+
+// WebSocket base — auto-converts http→ws, https→wss
+export const WS_BASE = _httpBase
+  .replace(/^https?:\/\//, (m) => (m === 'https://' ? 'wss://' : 'ws://'))
+  .replace(/\/$/, '');
 
 const client = axios.create({ baseURL: API_BASE, timeout: 30_000 });
 

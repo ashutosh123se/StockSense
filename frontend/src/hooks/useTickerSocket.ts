@@ -1,38 +1,54 @@
 import { useState, useEffect, useRef } from 'react';
+import { WS_BASE } from '../api';
 
 export function useTickerSocket(ticker: string) {
-  const [data, setData] = useState<any>(null);
+  const [data, setData]     = useState<any>(null);
   const [status, setStatus] = useState<'connecting' | 'open' | 'closed'>('connecting');
-  const socketRef = useRef<WebSocket | null>(null);
+  const socketRef           = useRef<WebSocket | null>(null);
+  const retryRef            = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const activeRef           = useRef(true);
 
   useEffect(() => {
     if (!ticker) return;
+    activeRef.current = true;
 
-    const wsUrl = `ws://localhost:8000/ws/market/${ticker}`;
-    const socket = new WebSocket(wsUrl);
-    socketRef.current = socket;
+    const connect = () => {
+      const ws = new WebSocket(`${WS_BASE}/ws/market/${ticker}`);
+      socketRef.current = ws;
 
-    socket.onopen = () => {
-      setStatus('open');
-      console.log(`Connected to WS for ${ticker}`);
+      ws.onopen = () => {
+        if (activeRef.current) setStatus('open');
+      };
+
+      ws.onmessage = (event) => {
+        try {
+          const msg = JSON.parse(event.data);
+          if (!msg.error) setData(msg);
+        } catch {}
+      };
+
+      ws.onclose = () => {
+        if (!activeRef.current) return;
+        setStatus('closed');
+        // Auto-reconnect after 5 seconds
+        retryRef.current = setTimeout(() => {
+          if (activeRef.current) {
+            setStatus('connecting');
+            connect();
+          }
+        }, 5000);
+      };
+
+      ws.onerror = () => ws.close();
     };
 
-    socket.onmessage = (event) => {
-      const message = JSON.parse(event.data);
-      setData(message);
-    };
-
-    socket.onclose = () => {
-      setStatus('closed');
-      console.log(`Disconnected from WS for ${ticker}`);
-    };
-
-    socket.onerror = (error) => {
-      console.error('WS Error:', error);
-    };
+    setStatus('connecting');
+    connect();
 
     return () => {
-      socket.close();
+      activeRef.current = false;
+      if (retryRef.current) clearTimeout(retryRef.current);
+      socketRef.current?.close();
     };
   }, [ticker]);
 

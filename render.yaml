@@ -1,0 +1,42 @@
+services:
+  - type: web
+    name: stocksense-ml-backend
+    env: python
+    region: oregon
+    buildCommand: pip install -r requirements.txt
+    startCommand: bash start.sh
+    rootDir: backend
+    plan: free
+    envVars:
+      - key: PORT
+        value: "8080"
+      - key: ROOT_PATH
+        value: ""
+      - key: SECRET_KEY
+        generateValue: true
+      - key: POSTGRES_SERVER
+        fromDatabase:
+          name: stocksense-db
+          property: host
+      - key: POSTGRES_PORT
+        fromDatabase:
+          name: stocksense-db
+          property: port
+      - key: POSTGRES_USER
+        fromDatabase:
+          name: stocksense-db
+          property: user
+      - key: POSTGRES_PASSWORD
+        fromDatabase:
+          name: stocksense-db
+          property: password
+      - key: POSTGRES_DB
+        fromDatabase:
+          name: stocksense-db
+          property: database
+
+databases:
+  - name: stocksense-db
+    databaseName: stocksense
+    user: stocksense_user
+    plan: free
