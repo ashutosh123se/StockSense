@@ -6,7 +6,12 @@ Strategy:
   2. Blend ensemble output with Signal Engine TA score for direction.
   3. If models not loaded / inference fails, fall back to pure TA.
 """
-import torch
+try:
+    import torch
+    _TORCH_AVAILABLE = True
+except ImportError:
+    torch = None  # type: ignore
+    _TORCH_AVAILABLE = False
 import numpy as np
 import os
 import joblib
@@ -25,7 +30,7 @@ class PredictionService:
     SEQ_LEN = 60
 
     def __init__(self):
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.device = torch.device("cuda" if _TORCH_AVAILABLE and torch.cuda.is_available() else "cpu") if _TORCH_AVAILABLE else "cpu"
         self.model_dir = os.path.join(os.getcwd(), "..", "ml-training", "models")
         self.models_loaded = False
 
@@ -74,13 +79,13 @@ class PredictionService:
     # ─────────────────────────────────────────────────────────────────
     def _ml_inference(self, features_df) -> float | None:
         """Run ensemble inference. Returns scaled prediction or None on failure."""
-        if not self.models_loaded:
+        if not self.models_loaded or not _TORCH_AVAILABLE:
             return None
         try:
             scaled = self.scaler.transform(features_df.values)
             if len(scaled) < self.SEQ_LEN:
                 return None
-            seq = torch.FloatTensor(scaled[-self.SEQ_LEN:]).unsqueeze(0).to(self.device)
+            seq = torch.FloatTensor(scaled[-self.SEQ_LEN:]).unsqueeze(0).to(self.device)  # type: ignore[union-attr]
 
             preds = []
             for model in [self._lstm, self._gru, self._cnn]:
