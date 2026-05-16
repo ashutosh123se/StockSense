@@ -6,7 +6,7 @@ and the live signals feed for the Dashboard.
 """
 import numpy as np
 import pandas as pd
-import pandas_ta as ta
+import app.ta as ta
 from typing import Dict, Any, List
 
 

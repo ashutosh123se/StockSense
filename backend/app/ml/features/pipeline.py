@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-import pandas_ta as ta
+import app.ta as ta
 
 def build_feature_pipeline(df: pd.DataFrame) -> pd.DataFrame:
     """
