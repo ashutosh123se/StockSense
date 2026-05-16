@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Activity, Crosshair, Target, RefreshCw, Wifi, WifiOff } from 'lucide-react';
 import { StockChart } from '../components/charts/StockChart';
-import { signalsApi, marketApi } from '../api';
+import { signalsApi, marketApi, WS_BASE } from '../api';
 import type { SignalResult } from '../api';
 
 // ─── Helper ───────────────────────────────────────────────────────────────────
@@ -23,7 +23,7 @@ function useTickerWS(ticker: string) {
     let active = true;
 
     const connect = () => {
-      ws = new WebSocket(`ws://localhost:8000/ws/market/${ticker}`);
+      ws = new WebSocket(`${WS_BASE}/ws/market/${ticker}`);
       ws.onopen  = () => active && setConnected(true);
       ws.onclose = () => {
         setConnected(false);
