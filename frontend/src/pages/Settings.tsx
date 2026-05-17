@@ -26,32 +26,53 @@ export function Settings() {
   const [showKey, setShowKey] = useState(false);
   const [saved, setSaved] = useState(false);
 
-  const [settings, setSettings] = useState({
-    backendUrl: 'http://localhost:8000',
-    apiKey: 'sk-stocksense-xxxxxxxxxxxxxxxx',
-    mlflowUrl: 'http://localhost:5000',
-    // Alerts
-    priceAlerts: true,
-    signalAlerts: true,
-    modelAlerts: false,
-    emailAlerts: false,
-    // Risk
-    maxPositionPct: 10,
-    stopLossDefault: 2,
-    takeProfitDefault: 4,
-    maxDrawdownAlert: 15,
-    // Data
-    dataSource: 'yfinance',
-    updateInterval: 5,
-    cacheEnabled: true,
-    mockFallback: true,
+  const [settings, setSettings] = useState(() => {
+    const savedBackend = localStorage.getItem('stocksense_backend_url');
+    const savedApiKey = localStorage.getItem('stocksense_api_key');
+    const savedMlflow = localStorage.getItem('stocksense_mlflow_url');
+    const savedAlerts = localStorage.getItem('stocksense_alerts');
+    const parsedAlerts = savedAlerts ? JSON.parse(savedAlerts) : {};
+
+    return {
+      backendUrl: savedBackend ?? (import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000'),
+      apiKey: savedApiKey ?? 'sk-stocksense-xxxxxxxxxxxxxxxx',
+      mlflowUrl: savedMlflow ?? 'http://localhost:5000',
+      // Alerts
+      priceAlerts: parsedAlerts.priceAlerts ?? true,
+      signalAlerts: parsedAlerts.signalAlerts ?? true,
+      modelAlerts: parsedAlerts.modelAlerts ?? false,
+      emailAlerts: parsedAlerts.emailAlerts ?? false,
+      // Risk
+      maxPositionPct: 10,
+      stopLossDefault: 2,
+      takeProfitDefault: 4,
+      maxDrawdownAlert: 15,
+      // Data
+      dataSource: 'yfinance',
+      updateInterval: 5,
+      cacheEnabled: true,
+      mockFallback: true,
+    };
   });
 
   const set = (key: string, value: any) => setSettings(prev => ({ ...prev, [key]: value }));
 
   const save = () => {
+    localStorage.setItem('stocksense_backend_url', settings.backendUrl);
+    localStorage.setItem('stocksense_api_key', settings.apiKey);
+    localStorage.setItem('stocksense_mlflow_url', settings.mlflowUrl);
+    localStorage.setItem('stocksense_alerts', JSON.stringify({
+      priceAlerts: settings.priceAlerts,
+      signalAlerts: settings.signalAlerts,
+      modelAlerts: settings.modelAlerts,
+      emailAlerts: settings.emailAlerts,
+    }));
+
     setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+    setTimeout(() => {
+      setSaved(false);
+      window.location.reload();
+    }, 1000);
   };
 
   return (

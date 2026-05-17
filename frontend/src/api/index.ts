@@ -7,8 +7,11 @@
  */
 import axios from 'axios';
 
-const _httpBase = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000';
-export const API_BASE = `${_httpBase}/api/v1`;
+const _httpBase = localStorage.getItem('stocksense_backend_url')
+  ?? import.meta.env.VITE_API_BASE_URL
+  ?? 'http://localhost:8000';
+
+export const API_BASE = `${_httpBase.replace(/\/$/, '')}/api/v1`;
 
 // WebSocket base — auto-converts http→ws, https→wss
 export const WS_BASE = _httpBase
