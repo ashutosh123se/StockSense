@@ -21,6 +21,9 @@ env/
 backend/.env
 ml-training/.env
 *.env.local
+# Allow these — they contain no secrets (just VITE_API_BASE_URL)
+!frontend/.env.production
+!frontend/.env.development
 
 # ─── Node / Frontend ─────────────────────────────────────────────────────────
 node_modules/
